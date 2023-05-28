@@ -2,7 +2,6 @@ package com.ticket.concert.controller;
 
 import com.ticket.concert.vo.BookVo;
 import com.ticket.concert.vo.TicketCustomerVo;
-import com.ticket.concert.vo.TicketVo;
 import com.ticket.concert.service.CustomerService;
 import com.ticket.concert.service.OrderService;
 
