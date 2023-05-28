@@ -105,7 +105,7 @@ public class SwaggerConfig implements WebMvcOpenApiTransformationFilter {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("Astra Property (aspro-service)")
+            .title("Elevenia Digital Technology Service (EDTS)")
             .description("Aspro API")
             .contact(DEFAULT_CONTACT)
             .version("1.0.0")

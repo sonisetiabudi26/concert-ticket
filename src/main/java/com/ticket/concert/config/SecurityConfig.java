@@ -41,6 +41,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 	}
 
+	private static final String[] AUTH_WHITELIST = {
+		"/api/**",
+		"/api/auth/**",
+        "/api/users/checkUsernameAvailability", "/api/users/checkEmailAvailability",
+        "/swagger-resources/**",
+        "/swagger-ui/**",
+        "/v3/api-docs",
+        "/webjars/**"
+};
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -52,10 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/api/**").permitAll()
-				.antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/api/users/checkUsernameAvailability", "/api/users/checkEmailAvailability").permitAll()
-				.antMatchers("/v2/api-docs", "/v3/api-docs", "/webjars/*", "/swagger/*", "/configuration/*", "/ping").permitAll()
+				.antMatchers(AUTH_WHITELIST).permitAll()
 				.anyRequest().authenticated();
 
 		http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
