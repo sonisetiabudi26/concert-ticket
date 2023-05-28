@@ -42,10 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	private static final String[] AUTH_WHITELIST = {
-		"/api/**",
-		"/api/auth/**",
-        "/api/users/checkUsernameAvailability", "/api/users/checkEmailAvailability",
-        "/swagger-resources/**",
+		"/swagger-resources/**",
         "/swagger-ui/**",
         "/v3/api-docs",
         "/webjars/**"
@@ -62,6 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 				.authorizeRequests()
+				.antMatchers(HttpMethod.GET, "/api/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 				.antMatchers(AUTH_WHITELIST).permitAll()
 				.anyRequest().authenticated();
 
