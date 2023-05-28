@@ -13,8 +13,7 @@ public class PagedResponse<T> {
 	private int size;
 	private long totalElements;
 	private int totalPages;
-	// private boolean last;
-
+	
 	public PagedResponse() {
 
 	}
@@ -25,7 +24,7 @@ public class PagedResponse<T> {
 		this.size = size;
 		this.totalElements = totalElements;
 		this.totalPages = totalPages;
-		// this.last = last;
+		
 	}
 
 	public List<T> getData() {

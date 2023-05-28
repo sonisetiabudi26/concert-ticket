@@ -1,11 +1,8 @@
 package com.ticket.concert.service;
 
-import com.ticket.concert.vo.CustomerVo;
 import com.ticket.concert.domain.Customer;
 import com.ticket.concert.repository.CustomerRepository;
 import com.ticket.concert.security.UserPrincipal;
-import com.ticket.concert.vo.CustomerVo;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;

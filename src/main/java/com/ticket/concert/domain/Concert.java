@@ -14,6 +14,7 @@ import com.ticket.concert.vo.ArtistVo;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -64,6 +65,12 @@ public class Concert implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
 	private Venue venue;
+
+	@OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Ticket> tickets;
+
+	@OneToMany(mappedBy = "concert", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<TicketCategory> ticketCats;
 
 
 

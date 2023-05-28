@@ -8,29 +8,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ticket.concert.service.ConcertService;
+import com.ticket.concert.service.TicketService;
 import com.ticket.concert.utils.AppConstants;
 import com.ticket.concert.utils.PagedResponse;
-import com.ticket.concert.vo.ConcertDetailVo;
 import com.ticket.concert.vo.ConcertVo;
+import com.ticket.concert.vo.TicketVo;
 @RestController
-@RequestMapping("/api/concert")
-public class ConcertController {
+@RequestMapping("/api/ticket")
+public class TicketController {
 
     @Autowired
-    private ConcertService concertService;
+    private TicketService ticketService;
 
     @GetMapping
-	public PagedResponse<ConcertVo> getAllConcert(
+	public PagedResponse<TicketVo> getAllTicket(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) throws Exception {
-		return concertService.getAllConcert(page, size);
+		return ticketService.getAllTicket(page, size);
 	}
 
-    @GetMapping("/{id}")
-      public ConcertDetailVo getConcert(
+    @GetMapping("/avail")
+      public PagedResponse<TicketVo> getTicketAvailable(
         @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size ,
-            @PathVariable(value = "id") Long id) throws Exception {
-        return concertService.getConcertDetail(id);
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) throws Exception {
+        return ticketService.getTicketAvailable(page,size);
 	}
 }

@@ -5,8 +5,8 @@ import javax.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.ticket.concert.domain.Customer;
+import com.ticket.concert.exception.ResourceNotFoundException;
 import com.ticket.concert.security.UserPrincipal;
-import com.ticket.concert.vo.CustomerVo;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
@@ -25,8 +25,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 	}
 
 	default Customer getUserByName(String username) throws Exception {
-		return findByUsername(username).orElseThrow(() -> new Exception("User"));
-				// .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+		return findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 	}
 
 	default Customer getUserByEmail(String email) throws Exception {
