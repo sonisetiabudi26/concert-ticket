@@ -13,8 +13,11 @@ import com.ticket.concert.domain.Customer;
 @Data
 public class AuthenticationVo {
 	
+	@JsonProperty(access=JsonProperty.Access.READ_ONLY)
 	private String accessToken;
+	@JsonProperty(access=JsonProperty.Access.READ_ONLY)
 	private String tokenType = "Bearer";
+	@JsonProperty(access=JsonProperty.Access.READ_ONLY)
     private CustomerVo user;
 
     @NotBlank
