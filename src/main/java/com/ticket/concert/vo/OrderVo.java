@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class OrderVo {
-    private Long id;
+    // private Long id;
 	// private Long custOrderId;
-	private Long ticketId;
+	// private Long ticketId;
 
 }

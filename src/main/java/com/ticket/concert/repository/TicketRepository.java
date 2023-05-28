@@ -15,9 +15,8 @@ import com.ticket.concert.domain.Ticket;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    @Query(value = "select * from ticket a left join ticket_category b on a.ticket_category_id=b.id where date(start_date) <= :date", nativeQuery = true)
-    Page<Ticket> findTicketAvailable(String date,Pageable pageable);
+    
 
-    List<Ticket> findByConcert(Concert concert);
+   
 
 }

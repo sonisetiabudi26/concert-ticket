@@ -1,17 +1,25 @@
 package com.ticket.concert.service;
 
+import com.ticket.concert.domain.Concert;
 import com.ticket.concert.domain.Customer;
 import com.ticket.concert.domain.CustomerOrder;
 import com.ticket.concert.domain.OrderTicket;
 import com.ticket.concert.domain.Ticket;
+import com.ticket.concert.domain.TicketCategory;
+import com.ticket.concert.exception.MessageException;
+import com.ticket.concert.exception.ResourceNotFoundException;
 import com.ticket.concert.repository.CustomerOrderRepository;
 import com.ticket.concert.repository.CustomerRepository;
 import com.ticket.concert.repository.OrderRepository;
+import com.ticket.concert.repository.TicketCategoryRepository;
 import com.ticket.concert.repository.TicketRepository;
 import com.ticket.concert.vo.BookVo;
 import com.ticket.concert.vo.ConcertVo;
+import com.ticket.concert.vo.TicketCustomerVo;
 import com.ticket.concert.vo.TicketVo;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
@@ -35,51 +43,69 @@ public class OrderService {
     private ConcertService concertService;
 
     @Autowired
+    private TicketCategoryRepository ticketCategoryRepository;
+
+    @Autowired
     private CustomerOrderRepository custOrderRepository;
 
     @Transactional
-    public TicketVo bookTicket(BookVo bookReq) throws Exception {
-        try {
+    public TicketCustomerVo bookTicket(BookVo bookReq) {
+       
             CustomerOrder dataCustomer = new CustomerOrder();
             dataCustomer.setOrderTime(new Date());
-            dataCustomer.setDeliveryEmailAddress(bookReq.getCustOrder().getDeliveryEmailAddress());
+            dataCustomer.setDeliveryEmailAddress(bookReq.getDeliveryEmailAddress());
             dataCustomer.setTimePaid(new Date());
             dataCustomer.setTimeSent(new Date());
-            dataCustomer.setTotalPrice(bookReq.getCustOrder().getTotalPrice());
-            dataCustomer.setDiscount(bookReq.getCustOrder().getDiscount());
-            dataCustomer.setFinalPrice(bookReq.getCustOrder().getFinalPrice());
+            dataCustomer.setTotalPrice(bookReq.getTotalPrice());
+            dataCustomer.setDiscount(bookReq.getDiscount());
+            dataCustomer.setFinalPrice(bookReq.getFinalPrice());
 
-            Optional<Customer> customer = custRepository.findById(bookReq.getCustOrder().getCustId());
+            Optional<Customer> customer = custRepository.findById(bookReq.getCustId());
             if (!customer.isPresent()) {
-                throw new Exception("Sorry, customer not found");
+                throw new MessageException("Sorry, customer not found");
             }
             dataCustomer.setCustomer(customer.get());
 
             CustomerOrder customerID = custOrderRepository.saveAndFlush(dataCustomer);
-           
+        
 
-            Optional<Ticket> ticket = ticketRepository.findById(bookReq.getOrder().getTicketId());
-
-            if (!ticket.isPresent()) {
-                throw new Exception("Sorry, ticket not found");
+            TicketCategory ticketCat = ticketCategoryRepository.findById(bookReq.getConcertId()).orElseThrow(() -> new  MessageException("Ticket Category not found"));
+            if (null==ticketCat) {
+                throw new MessageException("Sorry, ticket category not found");
             }
+            
+            if(ticketCat.getRemainingTicket()>0){
+                ticketCat.setRemainingTicket(ticketCat.getRemainingTicket()-1);
+            }else{
+                throw new MessageException("Sorry,Ticket not available");
+            }
+
+            Ticket dataTicket=new Ticket();
+            dataTicket.setConcert(ticketCat.getConcert());
+            dataTicket.setPurchaseDate(new Date());
+            dataTicket.setSeat(bookReq.getSeat());
+            dataTicket.setTicketCategory(ticketCat);
+            Long tm=new Timestamp(System.currentTimeMillis()).getTime();
+            String sn=ticketCat.getConcert().getId().toString().concat(tm.toString());
+            dataTicket.setSerialNumber(sn);
+            Ticket ticketID = ticketRepository.saveAndFlush(dataTicket);
             OrderTicket dataOrder = new OrderTicket();
             dataOrder.setCustomerOrder(customerID);
-            dataOrder.setTicket(ticket.get());
+            dataOrder.setTicket(ticketID);
             orderRepository.save(dataOrder);
-            return mappingData(ticket.get());
 
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-            throw new Exception("Error");
-        }
+            ticketCategoryRepository.save(ticketCat);
+           
+
+            return mappingData(ticketID);
+
+        
 
     }
 
-    private TicketVo mappingData(Ticket ticket) throws Exception {
+    private TicketCustomerVo mappingData(Ticket ticket) {
 
-        TicketVo data = new TicketVo();
+        TicketCustomerVo data = new TicketCustomerVo();
 
         data.setSerialNumber(ticket.getSerialNumber());
         data.setSeat(ticket.getSeat());
@@ -89,8 +115,6 @@ public class OrderService {
         data.setEndDate(ticket.getTicketCategory().getEndDate());
         data.setPrice(ticket.getTicketCategory().getPrice());
         data.setArea(ticket.getTicketCategory().getArea());
-        data.setTicketSlot(ticket.getTicketCategory().getTicketSlot());
-        data.setRemainingTicket(ticket.getTicketCategory().getRemainingTicket());
         ConcertVo dataConcert = concertService.getConcert(ticket.getConcert().getId());
         data.setConcert(dataConcert);
 

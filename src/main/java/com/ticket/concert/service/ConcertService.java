@@ -1,11 +1,13 @@
 package com.ticket.concert.service;
 
 import com.ticket.concert.domain.Concert;
+import com.ticket.concert.exception.MessageException;
 import com.ticket.concert.exception.ResourceNotFoundException;
 import com.ticket.concert.repository.ConcertRepository;
 import com.ticket.concert.utils.AppConstants;
 import com.ticket.concert.utils.PagedResponse;
 import com.ticket.concert.vo.ConcertVo;
+import com.ticket.concert.vo.TicketCategoryVo;
 import com.ticket.concert.vo.TicketVo;
 import com.ticket.concert.vo.VenueVo;
 import com.ticket.concert.vo.ArtistVo;
@@ -21,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConcertService {
@@ -32,8 +35,8 @@ public class ConcertService {
 
     @Transactional(readOnly = true)
 
-    public PagedResponse<ConcertVo> getAllConcert(int page, int size) throws Exception {
-        try {
+    public PagedResponse<ConcertVo> getAllConcert(int page, int size) {
+       
             validatePageNumberAndSize(page, size);
             Pageable pageable = PageRequest.of(page, size);
 
@@ -45,54 +48,38 @@ public class ConcertService {
             return new PagedResponse<>(dataVo, concerts.getNumber(), concerts.getSize(), concerts.getTotalElements(),
                     concerts.getTotalPages(), concerts.isLast());
 
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            throw new Exception("Error");
-        }
-
     }
 
-    public ConcertVo getConcert(Long id) throws Exception {
-        try {
-
+    public ConcertVo getConcert(Long id) {
+       
             Concert concert = concertRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Concert", "id", id));
+                    .orElseThrow(() -> new MessageException("Concert not found"));
 
             return mappingSingleData(concert);
 
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            throw new Exception("Error");
-        }
     }
 
-    public ConcertDetailVo getConcertDetail(Long id) throws Exception {
-        try {
-
+    public ConcertDetailVo getConcertDetail(Long id) {
+      
             Concert concert = concertRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Concert", "id", id));
+                    .orElseThrow(() -> new MessageException("Concert not found"));
 
             return mappingSingleDataDetail(concert);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new Exception("Error");
-        }
+       
     }
 
-    private void validatePageNumberAndSize(int page, int size) throws Exception {
+    private void validatePageNumberAndSize(int page, int size) {
         if (page < 0) {
-            throw new Exception("Page number cannot be less than zero.");
+            throw new MessageException("Page number cannot be less than zero.");
         }
 
         if (size < 0) {
-            throw new Exception("Size number cannot be less than zero.");
+            throw new MessageException("Size number cannot be less than zero.");
         }
 
         if (size > AppConstants.MAX_PAGE_SIZE) {
-            throw new Exception("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
+            throw new MessageException("Page size must not be greater than " + AppConstants.MAX_PAGE_SIZE);
         }
     }
 
@@ -117,7 +104,7 @@ public class ConcertService {
         return data;
     }
 
-    private ConcertDetailVo mappingSingleDataDetail(Concert concert) throws Exception {
+    private ConcertDetailVo mappingSingleDataDetail(Concert concert) {
         ConcertDetailVo data = new ConcertDetailVo();
         data.setId(concert.getId());
         data.setConcertName(concert.getConcertName());
@@ -135,15 +122,16 @@ public class ConcertService {
         venues.setCapacity(concert.getVenue().getCapacity());
         venues.setType(concert.getVenue().getType());
         data.setVenues(venues);
-        List<TicketVo> ticket = ticketService.getTicketbyIDConcert(concert);
+        List<TicketCategoryVo> ticket = ticketService.getTicketCategorybyIDConcert(concert);
         data.setTickets(ticket);
         return data;
     }
 
-    private List<ConcertVo> mappingData(List<Concert> concerts) {
+    public List<ConcertVo> mappingData(List<Concert> concerts) {
         List<ConcertVo> listData = new ArrayList<>();
-        ConcertVo data = new ConcertVo();
+       
         for (Concert concert : concerts) {
+            ConcertVo data = new ConcertVo();
             data.setId(concert.getId());
             data.setConcertName(concert.getConcertName());
             data.setDate(concert.getDate());
@@ -160,10 +148,14 @@ public class ConcertService {
             venues.setCapacity(concert.getVenue().getCapacity());
             venues.setType(concert.getVenue().getType());
             data.setVenues(venues);
+            List<TicketCategoryVo> ticket = ticketService.getTicketCategorybyIDConcert(concert);
+             data.setTickets(ticket);
             listData.add(data);
         }
 
         return listData;
     }
+
+   
 
 }

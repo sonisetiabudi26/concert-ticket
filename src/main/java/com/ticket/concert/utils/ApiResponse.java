@@ -1,6 +1,7 @@
 package com.ticket.concert.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class ApiResponse implements Serializable {
 	private String message;
 
 	@JsonProperty("status")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private HttpStatus status;
 
 	public ApiResponse() {

@@ -12,6 +12,7 @@ import com.ticket.concert.service.TicketService;
 import com.ticket.concert.utils.AppConstants;
 import com.ticket.concert.utils.PagedResponse;
 import com.ticket.concert.vo.ConcertVo;
+import com.ticket.concert.vo.TicketCategoryVo;
 import com.ticket.concert.vo.TicketVo;
 @RestController
 @RequestMapping("/api/ticket")
@@ -21,16 +22,19 @@ public class TicketController {
     private TicketService ticketService;
 
     @GetMapping
-	public PagedResponse<TicketVo> getAllTicket(
+	public PagedResponse<TicketCategoryVo> getAllTicket(
 			@RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
 			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) throws Exception {
 		return ticketService.getAllTicket(page, size);
 	}
 
     @GetMapping("/avail")
-      public PagedResponse<TicketVo> getTicketAvailable(
+      public PagedResponse<TicketCategoryVo> getTicketAvailable(
         @RequestParam(name = "page", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) Integer page,
-			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size) throws Exception {
-        return ticketService.getTicketAvailable(page,size);
+			@RequestParam(name = "size", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) Integer size,
+            @RequestParam(name = "fromdate",required = false, defaultValue = "")String fromdate,
+            @RequestParam(name = "todate",required = false, defaultValue = "")String todate,
+            @RequestParam(name = "concertID",required = false, defaultValue = "")Long concerID) throws Exception {
+        return ticketService.getTicketAvailable(fromdate,todate,concerID,page,size);
 	}
 }

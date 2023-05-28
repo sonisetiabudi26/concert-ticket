@@ -38,13 +38,12 @@ public class Ticket {
 	private String seat;
 
     @Column(name = "purchase_date")
-	@Size(max = 50)
 	private Date purchaseDate ;
 
     @ManyToOne(fetch = FetchType.LAZY)
 	private Concert concert;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private TicketCategory ticketCategory;
    
 }

@@ -33,32 +33,25 @@ public class TicketCategory {
 
     
 	@Column(name = "price")
-	@Size(max = 50)
 	private Double price;
 
     @Column(name = "start_date")
-	@Size(max = 50)
 	private Date startDate;
 
     @Column(name = "end_date")
-	@Size(max = 50)
 	private Date endDate;
 
     @Column(name = "area")
-	@Size(max = 50)
 	private String area;
 
-	@NotBlank
+	
 	@Column(name = "ticket_slot")
-	@Size(max = 50)
 	private Integer ticketSlot;
 
-	@NotBlank
 	@Column(name = "remaining_ticket")
-	@Size(max = 50)
 	private Integer remainingTicket;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
 	private Concert concert;
 
 	

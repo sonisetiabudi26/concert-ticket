@@ -14,5 +14,5 @@ public class ConcertDetailVo {
     private String concertGroup;
 	private ArtistVo artists;
 	private VenueVo venues;
-    private List<TicketVo> tickets;
+    private List<TicketCategoryVo> tickets;
 }

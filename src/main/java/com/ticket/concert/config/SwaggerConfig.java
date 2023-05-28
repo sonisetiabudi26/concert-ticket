@@ -73,7 +73,7 @@ public class SwaggerConfig implements WebMvcOpenApiTransformationFilter {
     } */
 
     private ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
+        return new ApiKey("Bearer", "Authorization", "header");
     }
     
     private SecurityContext securityContext() {
@@ -98,7 +98,7 @@ public class SwaggerConfig implements WebMvcOpenApiTransformationFilter {
             //.securityContexts(Arrays.asList(securityContext()))
             //.securitySchemes(Arrays.asList(securityScheme()))
             .securitySchemes(Arrays.asList(apiKey()))
-            .securityContexts(Arrays.asList(securityContext()))
+            // .securityContexts(Arrays.asList(securityContext()))
             .host(swaggerHost)
             .apiInfo(apiInfo());
     }
@@ -106,7 +106,7 @@ public class SwaggerConfig implements WebMvcOpenApiTransformationFilter {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Elevenia Digital Technology Service (EDTS)")
-            .description("Aspro API")
+            .description("EDTS API")
             .contact(DEFAULT_CONTACT)
             .version("1.0.0")
             .build();
