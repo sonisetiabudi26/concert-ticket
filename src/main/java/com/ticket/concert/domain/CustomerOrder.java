@@ -48,16 +48,13 @@ public class CustomerOrder implements Serializable {
 	private Date timeSent;
 
     @Column(name = "total_price")
-    @Size(max = 10)
 	private Double totalPrice;
 
     @Column(name = "discount")
-    @Size(max = 10)
-	private Double discount;
+    private Double discount;
 
     @Column(name = "final_price")
-    @Size(max = 10)
-	private Double finalPrice;
+    private Double finalPrice;
 
     
     @OneToMany(mappedBy = "customerOrder")
